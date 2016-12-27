@@ -4,21 +4,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>Typography Permutation</title>
+  <title>Typography Permutation (alpha)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js"></script>
-  <script src="http://zeptojs.com/zepto.min.js"></script>
-  <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Lato" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-git.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Inconsolata" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
   <div id="header">
-    <h1>Typography Permutation</h1>
+    <h1 class="inconsolata">Typography Combination</h1>
+    <h1 id="total-combinations">20 total combinations</h1>
   </div>
-  <div id="inputs"></div>
-  <div id="app"></div>
-  </pre>
+  <div class="wrapper">
+    <div id="inputs">
+    </div>
+    <div id="app"></div>
+  </div>
   <script src='typographyPermutation.min.js'></script>
+  <script>
+  var Tawk_API = Tawk_API || {},
+    Tawk_LoadStart = new Date();
+  (function() {
+    var s1 = document.createElement("script"),
+      s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = 'https://embed.tawk.to/5734a7777a3ac52f0f9f14e7/default';
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
+    s0.parentNode.insertBefore(s1, s0);
+  })();
+  </script>
 </body>
 
 </html>

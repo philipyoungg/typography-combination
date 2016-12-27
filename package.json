@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel --es2015 src/src.js | uglifyjs -m -c > typographyPermutation.min.js"
+    "build": "babel --es2015 src/src.js | uglifyjs -m -c > typographyPermutation.min.js",
+    "publish": "npm run build && surge"
   },
   "keywords": [],
   "author": "Philip Young Gunawan <hello@philipyoungg.com> (http://www.philipyoungg.com)",
