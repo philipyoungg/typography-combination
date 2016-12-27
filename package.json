@@ -9,5 +9,6 @@
   },
   "keywords": [],
   "author": "Philip Young Gunawan <hello@philipyoungg.com> (http://www.philipyoungg.com)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }
