@@ -37,27 +37,31 @@
     font-family: Inconsolata;
   }
   
-  #inputs,
   #app {
+    position: fixed;
     padding: 2rem 3rem;
-  }
-  
-  #app {
     padding-top: 4rem;
-    width: 48rem;
-    float: left;
-    margin-left: 28rem;
+    width: calc(100% - 24rem);
+    margin-left: 24rem;
     margin-top: 71px;
+    height: calc(100% - 71px);
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
   }
   
-  #inputs {
+  #input-container {
     position: fixed;
     margin-top: 71px;
-    width: 28rem;
+    width: 24rem;
     background: #333;
     height: calc(100% - 71px);
     overflow: scroll;
     -webkit-overflow-scrolling: touch;
+  }
+  
+  #inputs {
+    padding: 2rem;
+    padding-top: 3rem;
   }
   
   input {
@@ -105,15 +109,19 @@
   
   .typography-item {
     background: white;
-    margin-bottom: 2rem;
     padding: 4rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.05)
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.05);
+    max-width: 45rem;
+    margin: 0 auto;
+    margin-bottom: 2rem;
   }
   
   .typography-item-identifier {
     color: #aaa;
-    margin-bottom: 0.75rem;
     margin-left: 0.5rem;
+    max-width: 45rem;
+    margin: 0 auto;
+    margin-bottom: 0.75rem;
   }
   
   .selectize-control.multi .selectize-input .item {
@@ -183,12 +191,37 @@
     -webkit-text-fill-color: transparent;
   }
   
+  .active-combination {
+    width: 100%;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+  }
+  
+  .active-combination__item {
+    display: inline-block;
+    width: 33.33%;
+    color: white;
+    font-family: Inconsolata;
+    text-align: center;
+    padding: 0.75rem 0;
+    border-right: 1px solid #444;
+    cursor: pointer;
+  }
+  
+  .active-combination__item:hover {
+    background: #444;
+  }
+  
+  .active-combination__item.active {
+    background: #666;
+  }
+  
   @media screen and (max-width: 40em) {
     h1 {
       font-size: 2rem;
     }
     #header,
-    #inputs,
+    #input-container,
     #app {
       padding: 2rem;
       position: relative;
