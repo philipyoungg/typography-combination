@@ -1,0 +1,13 @@
+{
+  "name": "permutationTypography",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel --es2015 src/src.js | uglifyjs -m -c > typographyPermutation.min.js"
+  },
+  "keywords": [],
+  "author": "Philip Young Gunawan <hello@philipyoungg.com> (http://www.philipyoungg.com)",
+  "license": "ISC"
+}
