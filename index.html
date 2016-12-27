@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
@@ -8,71 +9,75 @@
   <script src="http://zeptojs.com/zepto.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Lato" rel="stylesheet">
   <style>
-    html {
-      font-family: sans-serif;
-      line-height: 1.3;
-      color: #333;
-    }
-
-    h1, h2, p {
-      margin: 0;
-    }
-
-    h1 {
-      margin-bottom: 3rem;
-      font-size: 3rem;
-    }
-
+  html {
+    font-family: sans-serif;
+    line-height: 1.3;
+    color: #333;
+  }
+  
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
+  
+  h1 {
+    margin-bottom: 3rem;
+    font-size: 3rem;
+  }
+  
+  body {
+    max-width: 35rem;
+    margin-left: 3rem;
+    margin-bottom: 8rem;
+    margin-top: 5rem;
+    overflow-x: hidden;
+  }
+  
+  @media screen and (max-width: 30em) {
     body {
-      max-width: 35rem;
-      margin-left: 3rem;
-      margin-bottom: 8rem;
-      margin-top: 5rem;
-      overflow-x: hidden;
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
     }
-
-    @media screen and (max-width: 30em) {
-      body {
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
-      }
-      h1 {
-        font-size: 2rem;
-      }
+    h1 {
+      font-size: 2rem;
     }
+  }
   </style>
 </head>
+
 <body>
   <h1>Typography Permutation generated from JSON below</h1>
   <pre>
-    {
-      sortBy: 'color',
-      title: {
-      text: ['Guns, Germs, and Steel.'],
-      fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display'],
-      fontSize: ['3rem'],
-      color: ['black', 'mediumblue'],
-      lineHeight: ['1.2'],
-      marginBottom: ['0.5rem'],
-      },
-      description: {
-        text: ["So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?"],
-        fontFamily: ['sans-serif', 'Georgia'],
-        fontSize: ['1rem'],
-        color: ['#333'],
-        lineHeight: ['1.5'],
-        marginBottom: ['1rem'],
-      },
-      subTitle: {
-        text: ['by Philip Young'],
-        fontFamily: ['sans-serif'],
-        fontSize: ['1rem'],
-        color: ['#666'],
-        lineHeight: ['1.2'],
-        marginBottom: ['1.5rem'],
-      },
-    }
-  </pre>
+          {
+            sortBy: 'color',
+            title: {
+            text: ['Guns, Germs, and Steel.'],
+            fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display'],
+            fontSize: ['3rem'],
+            color: ['black', 'mediumblue'],
+            lineHeight: ['1.2'],
+            marginBottom: ['0.5rem'],
+            },
+            description: {
+              text: ["So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?"],
+              fontFamily: ['sans-serif', 'Georgia'],
+              fontSize: ['1rem'],
+              color: ['#333'],
+              lineHeight: ['1.5'],
+              marginBottom: ['1rem'],
+            },
+            subTitle: {
+              text: ['by Philip Young'],
+              fontFamily: ['sans-serif'],
+              fontSize: ['1rem'],
+              color: ['#666'],
+              lineHeight: ['1.2'],
+              marginBottom: ['1.5rem'],
+            },
+          }
+    </pre>
   <script src='typographyPermutation.min.js'></script>
 </body>
+
 </html>
