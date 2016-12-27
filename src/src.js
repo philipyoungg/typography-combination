@@ -39,12 +39,12 @@
   const combination6 = createCombination(arg6);
   const combination8 = createCombination(arg8);
 
-  const insideCombination = R.useWith(R.zipObj, [
+  const insideCombination = R.converge(R.zipObj, [
     R.compose(R.keys, R.omit(omitKeys)),
     R.compose(R.map(combination6), R.values, R.omit(omitKeys)),
   ]);
 
-  const allCombination = R.useWith(R.compose(combination8, R.merge), [
+  const allCombination = R.converge(R.compose(combination8, R.merge), [
     R.identity,
     insideCombination,
   ]);
