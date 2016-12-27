@@ -17,7 +17,7 @@
       color: ['#333'],
       lineHeight: ['1.5'],
       marginTop: ['0'],
-      marginBottom: ['1rem'],
+      marginBottom: ['6rem'],
       letterSpacing: ['0'],
     },
     subTitle: {
@@ -51,59 +51,91 @@
     insideCombination,
   ]);
 
-  const data = allCombination(app);
-
-  R.forEach(item => {
-    const {
-      text,
-      color,
-      fontFamily,
-      fontSize,
-      lineHeight,
-      marginBottom,
-      description,
-      subTitle,
-      letterSpacing,
-    } = item;
-    $(document.body)
-      .append($('<p>')
-        .text(`${item.fontFamily} - ${item.color} - ${item.fontSize}`)
+  R.forEach(key => {
+    $('#inputs')
+      .append($('<div>')
         .css({
-          borderBottom: '1px solid silver',
-          marginTop: '6rem',
           marginBottom: '1rem',
         })
-      )
-      .append($('<h1>')
-        .text(`${text}`)
-        .css({
-          fontFamily,
-          color,
-          fontSize,
-          lineHeight,
-          marginBottom,
-          letterSpacing,
-        })
-      )
-      .append($('<p>')
-        .text(`${subTitle.text}`)
-        .css({
-          fontFamily: subTitle.fontFamily,
-          color: subTitle.color,
-          fontSize: subTitle.fontSize,
-          lineHeight: subTitle.lineHeight,
-          marginBottom: subTitle.marginBottom,
-        })
-      )
-      .append($('<p>')
-        .text(`${description.text}`)
-        .css({
-          fontFamily: description.fontFamily,
-          color: description.color,
-          fontSize: description.fontSize,
-          lineHeight: description.lineHeight,
-          marginBottom: description.marginBottom,
-        })
+        .append($('<label>', {
+            text: key,
+          })
+          .css({
+            display: 'block',
+            fontSize: '0.75rem',
+          })
+        )
+        .append($('<input>', {
+          value: String(app[key]).replace(/,(?=[^\s])/g, ', '),
+        }))
       );
-  })(R.sortBy(sortAllBy)(data));
+  })(R.take(propLength)(R.keys(app)));
+
+  const renderPermutation = () => {
+    const data = allCombination(app);
+    R.sortBy(sortAllBy)(data).forEach((item, index) => {
+      const {
+        text,
+        color,
+        fontFamily,
+        fontSize,
+        lineHeight,
+        marginBottom,
+        description,
+        subTitle,
+        letterSpacing,
+      } = item;
+      $('#app')
+        .append($('<p>')
+          .text(`${index + 1}. ${item.fontFamily} - ${item.color} - ${item.fontSize}`)
+          .css({
+            borderBottom: '1px solid silver',
+            marginBottom: '1rem',
+          })
+        )
+        .append($('<h1>')
+          .text(`${text}`)
+          .css({
+            fontFamily,
+            color,
+            fontSize,
+            lineHeight,
+            marginBottom,
+            letterSpacing,
+          })
+        )
+        .append($('<p>')
+          .text(`${subTitle.text}`)
+          .css({
+            fontFamily: subTitle.fontFamily,
+            color: subTitle.color,
+            fontSize: subTitle.fontSize,
+            lineHeight: subTitle.lineHeight,
+            marginBottom: subTitle.marginBottom,
+          })
+        )
+        .append($('<p>')
+          .text(`${description.text}`)
+          .css({
+            fontFamily: description.fontFamily,
+            color: description.color,
+            fontSize: description.fontSize,
+            lineHeight: description.lineHeight,
+            marginBottom: description.marginBottom,
+          })
+        );
+    });
+  };
+
+  // ///////////////////////////////////////////////////////////////////////////
+
+  renderPermutation();
+
+  $('input').on('keyup', e => {
+    const prop = $(e.target).prev().text();
+    const value = R.split(',', R.trim($(e.target).val()));
+    app[prop] = value;
+    $('#app').empty();
+    renderPermutation();
+  });
 })(document, window, $, R);
