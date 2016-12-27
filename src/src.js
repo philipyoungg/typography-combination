@@ -3,18 +3,22 @@
 
   const app = {
     text: ['Guns, Germs, and Steel.'],
-    fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display'],
+    fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display', 'Times New Roman'],
     fontSize: ['3rem'],
     color: ['black', 'mediumblue'],
     lineHeight: ['1.2'],
+    marginTop: ['0'],
     marginBottom: ['0.5rem'],
+    letterSpacing: ['-0.025em'],
     description: {
       text: ["So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?"],
       fontFamily: ['sans-serif', 'Georgia'],
       fontSize: ['1rem'],
       color: ['#333'],
       lineHeight: ['1.5'],
+      marginTop: ['0'],
       marginBottom: ['1rem'],
+      letterSpacing: ['0'],
     },
     subTitle: {
       text: ['by Philip Young'],
@@ -22,29 +26,27 @@
       fontSize: ['1rem'],
       color: ['#666'],
       lineHeight: ['1.2'],
+      marginTop: ['0'],
       marginBottom: ['1.5rem'],
+      letterSpacing: ['0'],
     },
   };
 
-  const arg6 = (a, b, c, d, e, f) => [a, b, c, d, e, f];
-  const arg8 = (a, b, c, d, e, f, g, h) => [a, b, c, d, e, f, g, h];
-  const omitKeys = ['text', 'fontFamily', 'fontSize', 'color', 'lineHeight', 'marginBottom'];
+  const propLength = R.compose(R.length, R.keys, R.filter(R.isArrayLike))(app);
+  const appLength = R.compose(R.length, R.keys)(app);
 
-  const createCombination = argN =>
+  const combinationOf = argN =>
     R.converge(R.map, [
       R.compose(R.zipObj, R.keys),
-      R.compose(R.apply(R.lift(argN)), R.values),
+      R.compose(R.apply(R.liftN(argN, R.unapply(R.identity))), R.values),
     ]);
 
-  const combination6 = createCombination(arg6);
-  const combination8 = createCombination(arg8);
-
   const insideCombination = R.converge(R.zipObj, [
-    R.compose(R.keys, R.omit(omitKeys)),
-    R.compose(R.map(combination6), R.values, R.omit(omitKeys)),
+    R.compose(R.keys, R.reject(R.isArrayLike)),
+    R.compose(R.map(combinationOf(propLength)), R.values, R.reject(R.isArrayLike)),
   ]);
 
-  const allCombination = R.converge(R.compose(combination8, R.merge), [
+  const allCombination = R.converge(R.compose(combinationOf(appLength), R.merge), [
     R.identity,
     insideCombination,
   ]);
@@ -61,6 +63,7 @@
       marginBottom,
       description,
       subTitle,
+      letterSpacing,
     } = item;
     $(document.body)
       .append($('<p>')
@@ -79,6 +82,7 @@
           fontSize,
           lineHeight,
           marginBottom,
+          letterSpacing,
         })
       )
       .append($('<p>')

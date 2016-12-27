@@ -31,7 +31,12 @@
     margin-left: 3rem;
     margin-bottom: 8rem;
     margin-top: 5rem;
-    overflow-x: hidden;
+  }
+  
+  pre {
+    width: 100%;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
   }
   
   @media screen and (max-width: 30em) {
@@ -49,34 +54,34 @@
 <body>
   <h1>Typography Permutation generated from JSON below</h1>
   <pre>
-          {
-            sortBy: 'color',
-            title: {
-            text: ['Guns, Germs, and Steel.'],
-            fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display'],
-            fontSize: ['3rem'],
-            color: ['black', 'mediumblue'],
-            lineHeight: ['1.2'],
-            marginBottom: ['0.5rem'],
-            },
-            description: {
-              text: ["So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?"],
-              fontFamily: ['sans-serif', 'Georgia'],
-              fontSize: ['1rem'],
-              color: ['#333'],
-              lineHeight: ['1.5'],
-              marginBottom: ['1rem'],
-            },
-            subTitle: {
-              text: ['by Philip Young'],
-              fontFamily: ['sans-serif'],
-              fontSize: ['1rem'],
-              color: ['#666'],
-              lineHeight: ['1.2'],
-              marginBottom: ['1.5rem'],
-            },
-          }
-    </pre>
+  {
+    sortBy: 'color',
+    title: {
+    text: ['Guns, Germs, and Steel.'],
+    fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display'],
+    fontSize: ['3rem'],
+    color: ['black', 'mediumblue'],
+    lineHeight: ['1.2'],
+    marginBottom: ['0.5rem'],
+    },
+    description: {
+      text: ["So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?"],
+      fontFamily: ['sans-serif', 'Georgia'],
+      fontSize: ['1rem'],
+      color: ['#333'],
+      lineHeight: ['1.5'],
+      marginBottom: ['1rem'],
+    },
+    subTitle: {
+      text: ['by Philip Young'],
+      fontFamily: ['sans-serif'],
+      fontSize: ['1rem'],
+      color: ['#666'],
+      lineHeight: ['1.2'],
+      marginBottom: ['1.5rem'],
+    },
+  }
+  </pre>
   <script src='typographyPermutation.min.js'></script>
 </body>
 
