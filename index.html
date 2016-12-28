@@ -3,26 +3,28 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>Typography Permutation (alpha)</title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+  <title>Typography Combination</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js"></script>
-  <script src="https://code.jquery.com/jquery-git.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Inconsolata" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Inconsolata|Open+Sans|Crimson|Roboto" rel="stylesheet">
   <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-  <div id="header">
-    <h1 class="inconsolata">Typography Combination</h1>
-    <h1 id="total-combinations">20 total combinations</h1>
-  </div>
   <div class="wrapper">
-    <div id="input-container"></div>
+    <div id="input-container">
+    </div>
     <div id="app"></div>
   </div>
-  <script src='src/src.js'></script>
+  <div id="credits">
+    <p>by <a target="_blank" href="http://www.philipyoungg.com">Philip Young</a></p>
+  </div>
+  <script src='typographyPermutation.min.js'></script>
+  <!-- <script src='src/src.js'></script> -->
   <script>
   var Tawk_API = Tawk_API || {},
     Tawk_LoadStart = new Date();

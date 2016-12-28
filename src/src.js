@@ -1,45 +1,72 @@
 ((document, window, $, R) => {
-  const sortAllBy = R.path(['color']);
+  const sortAllBy = R.path(['fontFamily']);
 
-  const app = {
-    fontFamily: ['Lato', 'Avenir', 'Georgia', 'Playfair Display', 'Times New Roman'],
-    fontSize: ['3rem'],
-    fontWeight: ['bold'],
-    color: ['#333', 'mediumblue'],
-    lineHeight: ['1.2'],
-    marginBottom: ['8px'],
-    letterSpacing: ['-0.025em'],
-    text: ['Guns, Germs, and Steel'],
+  let app = {
+    title: {
+      type: 'text',
+      properties: {
+        fontFamily: ['Lato', 'Playfair Display', 'Open Sans'],
+        fontSize: ['3rem'],
+        fontWeight: [500, 'bold'],
+        // fontStyle: ['normal'],
+        // textTransform: ['none', 'uppercase'],
+        color: ['#333', 'mediumblue'],
+        lineHeight: ['1.2'],
+        marginBottom: ['8px'],
+        letterSpacing: ['-0.025em'],
+        text: ['Guns, Germs, and Steel'],
+      },
+    },
     metatitle: {
-      fontFamily: ['sans-serif'],
-      fontSize: ['1rem'],
-      fontWeight: ['regular'],
-      color: ['#666'],
-      lineHeight: ['1.2'],
-      marginBottom: ['1.5rem'],
-      letterSpacing: ['0'],
-      text: ['by Philip Young'],
+      type: 'text',
+      properties: {
+        fontFamily: ['sans-serif'],
+        fontSize: ['1rem'],
+        fontWeight: ['regular'],
+        // fontStyle: ['italic'],
+        // textTransform: ['none'],
+        color: ['#666'],
+        lineHeight: ['1.2'],
+        marginBottom: ['1.5rem'],
+        letterSpacing: ['0'],
+        text: ['by Jared Diamond'],
+      },
     },
     description: {
-      fontFamily: ['sans-serif', 'Georgia'],
-      fontSize: ['1rem'],
-      fontWeight: ['regular'],
-      color: ['#333'],
-      lineHeight: ['1.5'],
-      marginBottom: ['0'],
-      letterSpacing: ['0'],
-      text: [
-        "So the first number of the result is easy, a, b, and c, are all the first elements of each array. The second one isn't as easy for me to understand. Are the arguments the second value of each array (2, 2, undefined) or is it the second value of the first array and the first values of the second and third array?",
-      ],
+      type: 'text',
+      properties: {
+        fontFamily: ['Roboto', 'Crimson'],
+        fontSize: ['1rem'],
+        fontWeight: ['regular'],
+        // fontStyle: ['normal'],
+        // textTransform: ['none'],
+        color: ['#333'],
+        lineHeight: ['1.5'],
+        marginBottom: ['0'],
+        letterSpacing: ['0'],
+        text: [
+          'In the 1930s, the Annales School in France undertook the study of long-term historical structures by using a synthesis of geography, history, and sociology. Scholars examined the impact of geography, climate, and land use. Although geography had been nearly eliminated as an academic discipline in the United States after the 1960s, several geography-based historical theories were published in the 1990s.',
+        ],
+      },
     },
   };
+  // const selectizeToObject = data => R.zipObj(['text', 'value'], [data, data]);
+  // const placeholderValues = {
+    // fontSize: ['4px', '8px', '16px', '32px', '64px'],
+  // };
+  // const placeholderData = R.map(R.map(selectizeToObject), placeholderValues);
 
-  const propLength = R.compose(R.length, R.keys, R.filter(R.isArrayLike))(app);
-  const appLength = R.compose(R.length, R.keys)(app);
-  const countTotalPermutation = R.compose(
-    R.reduce(R.multiply, 1),
-    R.map(R.length),
-    R.take(propLength), R.values);
+  // {k: [String]} => [{k: v}]
+
+  // const arg = {
+  //   10: (a, b, c, d, e, f, g, h, i, j) => [a, b, c, d, e, f, g, h, i, j],
+  //   12: (a, b, c, d, e, f, g, h, i, j, k, l) => [a, b, c, d, e, f, g, h, i, j, k, l],
+  // };
+
+
+  const propLength = R.compose(R.length, R.values, R.prop('properties'), R.head, R.values)(app);
+  const keyLength = R.compose(R.length, R.keys)(app);
+  const appLength = R.sum([propLength, keyLength, -1]);
 
   const combinationOf = argN =>
     R.converge(R.map, [
@@ -48,138 +75,212 @@
     ]);
 
   const insideCombination = R.converge(R.zipObj, [
-    R.compose(R.keys, R.reject(R.isArrayLike)),
-    R.compose(R.map(combinationOf(propLength)), R.values, R.reject(R.isArrayLike)),
+    R.compose(R.tail, R.keys),
+    R.compose(R.map(combinationOf(propLength)), R.values, R.tail, R.map(R.prop('properties')), R.values),
   ]);
 
   const allCombination = R.converge(R.compose(combinationOf(appLength), R.merge), [
-    R.identity,
+    R.compose(R.prop('properties'), R.head, R.values),
     insideCombination,
   ]);
 
   // ///////////////////////////////////////////////////////////////////////////
 
+  const countTotalPermutation = R.compose(
+    R.reduce(R.multiply, 1),
+    R.map(R.length),
+    R.values, R.prop('properties'));
+
+  const wrapWithProperties = R.map(R.compose(R.zipObj(['properties']), R.of));
+
+  const convertToSchema = R.converge(R.merge, [
+    R.compose(wrapWithProperties, R.zipObj(['title']), R.of, R.map(R.of), R.filter(R.is(String))),
+    R.compose(wrapWithProperties, R.map(R.map(R.of)), R.filter(R.is(Object))),
+  ]);
+
+  // ///////////////////////////////////////////////////////////////////////////
+
   const state = {
-    active: 'app',
-    activeComponent: app,
+    active: 'title',
   };
 
   const data = {
-    component: R.compose(R.prepend('app'), R.keys, R.reject(R.isArrayLike))(app),
+    component: R.keys(app),
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  const renderPermutation = component => {
+  const renderPermutation = () => {
+    const combinations = allCombination(app);
     $('#app').empty();
-    const combinations = allCombination(component);
-    $('#total-combinations')
-      .text(`${combinations.length} total ${combinations.length > 1 ? 'combinations' : 'combination'}`);
     R.sortBy(sortAllBy)(combinations).forEach((item, index) => {
       const {
         description,
         metatitle,
       } = item;
 
+      const localComponent = state.active === 'title' ? item : item[state.active]; // different because it have been rendered
+
       $('#app')
-        .append($('<p>', {
+        .append($('<div>', {
+          class: 'typography',
+        })
+        .append($('<div>', {
           class: 'typography-item-identifier',
         })
-          .text(`${index + 1}. ${item.fontFamily} - ${item.color} - ${item.fontSize}`)
-        )
+        .append($('<p>', {
+          class: 'typography-item-identifier__text',
+          text: `${index + 1}. ${localComponent.fontFamily} - ${localComponent.fontSize} - ${localComponent.color} - ${localComponent.lineHeight}`,
+        }))
+        .append($('<p>', {
+          class: 'typography-item-identifier__select',
+          html: 'iterate this style &rarr;',
+        })
+          .on('click', () => {
+            updateApp(R.merge(app, convertToSchema(item)));
+          })
+        ))
         .append($('<div>', {
           class: 'typography-item',
         })
-          .append($('<h1>')
+          .append($('<h1>', {
+            class: state.active === 'title' ? 'element-on-focus' : '',
+          })
             .text(`${item.text}`)
             .css(item)
+            .on('click', () => {
+              updateActiveState('title');
+            })
           )
-          .append($('<p>')
+          .append($('<p>', {
+            class: state.active === 'metatitle' ? 'element-on-focus' : '',
+          })
             .text(`${metatitle.text}`)
             .css(metatitle)
+            .on('click', e => {
+              updateActiveState('metatitle');
+            })
           )
-          .append($('<p>')
+          .append($('<p>', {
+            class: state.active === 'description' ? 'element-on-focus' : '',
+          })
             .text(`${description.text}`)
             .css(description)
+            .on('click', e => {
+              state.active = 'description';
+              updateActiveState('description');
+            })
           )
-        );
+        )
+      );
     });
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  const renderInputs = component => {
-    $('#input-container').empty();
+  const renderActiveCombination = () => {
+    $('.active-combination').remove();
     $('#input-container')
-      .append($('<div>', {
+      .prepend($('<div>', {
         class: 'active-combination',
       }));
     R.forEach(key => {
-      const activeState = key === 'app' ? app : app[key];
-      const totalCount = countTotalPermutation(activeState);
+      const totalCount = countTotalPermutation(app[key]);
       $('.active-combination')
         .append($('<p>', {
           class: `active-combination__item ${state.active === key ? 'active' : ''}`,
-          text: key === 'app' ? 'title' : key,
+          text: key === 'title' ? 'title' : key,
         }).on('click', () => {
-          state.activeComponent = key === 'app' ? app : app[key];
-          state.active = key;
-          renderPermutation(app);
-          renderInputs(state.activeComponent);
+          updateActiveState(key);
         }).append($('<p>', {
           class: 'active-combination__count',
           text: `${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`,
         })));
     })(data.component);
+  };
+
+  const renderInputs = () => {
+    renderActiveCombination();
+    $('#inputs').remove();
     $('#input-container')
       .append($('<div>', {
         id: 'inputs',
       }));
-    R.forEach(key => {
-      $('#inputs')
+    R.forEach(prop => {
+      if (prop === 'text') {
+        $('#inputs')
         .append($('<div>')
           .css({
             marginBottom: '1rem',
           })
           .append($('<label>', {
-            text: key,
+            text: prop.replace(/([A-Z])/g, ' $1'),
           })
-            .css({
-              display: 'block',
-              fontSize: '0.75rem',
-            })
           )
-          .append($('<input>', {
-            value: String(component[key]).replace(/,(?=[^\s])/g, ', '),
-            name: key,
+          .append($('<textarea>', {
+            text: String(app[state.active].properties[prop]).replace(/,(?=[^\s])/g, ', '),
+            name: prop,
           }))
         );
-    })(R.take(propLength)(R.keys(component)));
+      } else {
+        $('#inputs')
+        .append($('<div>')
+          .css({
+            marginBottom: '1rem',
+          })
+          .append($('<label>', {
+            text: prop.replace(/([A-Z])/g, ' $1'),
+          })
+          )
+          .append($('<input>', {
+            value: String(app[state.active].properties[prop]).replace(/,(?=[^\s])/g, ', '),
+            name: prop,
+          }))
+        );
+      }
+    })(R.keys(app[state.active].properties));
 
-    $('input').each((index, inp) => {
-      $(inp).selectize({
-        delimiter: $(inp).attr('name') === 'text' ? '>' : ',',
-        create: input => ({
-          value: input,
-          text: input,
-        }),
-      });
+    // ///////////////////////////////////////////////////////////////////////////
+
+    $('input').selectize({
+      plugins: ['remove_button'],
+      persist: false,
+      create: input => ({
+        value: input,
+        text: input,
+      }),
     });
 
     const updatePermutationOnChange = e => {
       const prop = $(e.target).attr('name');
-      const value = prop === 'text' ? [$(e.target).val()] :
+      const value = prop === 'text' ?
+        [$(e.target).val()] :
         R.split(',', R.trim($(e.target).val()));
-      state.activeComponent[prop] = value;
-      renderPermutation(app);
-      renderInputs(state.activeComponent);
+      app[state.active].properties[prop] = value;
+      renderPermutation();
+      renderActiveCombination();
     };
 
     $('input').on('change', updatePermutationOnChange);
+    $('textarea').on('input', updatePermutationOnChange);
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  renderInputs(app);
-  renderPermutation(app);
+  const renderAll = () => {
+    renderInputs();
+    renderPermutation();
+  };
+
+  const updateApp = newData => {
+    app = newData;
+    renderAll();
+  };
+
+  const updateActiveState = newData => {
+    state.active = newData;
+    renderAll();
+  };
+
+  renderAll();
 })(document, window, $, R);

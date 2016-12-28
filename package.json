@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run watch & browser-sync start --server --files index.html main.css typographyPermutation.min.js",
+    "watch": "babel -w --es2015 -o typographyPermutation.min.js src/src.js",
     "build": "babel --es2015 src/src.js | uglifyjs -m -c > typographyPermutation.min.js",
     "publish": "npm run build && surge"
   },
