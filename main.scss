@@ -213,6 +213,7 @@ textarea,
   background-image: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
   background-blend-mode: overlay;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
 }
 
 .selectize-input .item:hover {
@@ -237,6 +238,7 @@ textarea,
   background: #2e2e2e;
   line-height: 22px; // hack
   background-image: linear-gradient(rgba(255, 255, 255, 0.05), transparent);
+  transition: 0.3s ease-in-out;
 }
 
 .selectize-input .item a:hover {

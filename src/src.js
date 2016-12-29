@@ -124,30 +124,39 @@
     active: 'title',
     totalPermutation: 1,
     component: R.keys(app),
-    combinations: allCombination(app),
+    combination: allCombination(app),
+    activeCombinationIndex: null,
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
+  const renderActiveInputItem = () => {
+    if (state.activeCombinationIndex !== null) {
+      R.forEach(prop => {
+        $('.selectize-input > .item').each((i, elem) => {
+          if ($(elem).attr('data-value').toLowerCase().trim() === prop.toLowerCase().trim()) {
+            $(elem).addClass('active');
+          }
+        });
+      })(R.values(state.combination[state.activeCombinationIndex][state.active]));
+    } else {
+      $('.selectize-input > .item').removeClass('active');
+    }
+  };
+
   const renderPermutation = () => {
     $('#app').empty();
-    state.combinations = allCombination(app);
-    state.combinations.forEach((item, index) => {
+    renderActiveInputItem();
+    state.combination = allCombination(app);
+    state.combination.forEach((item, index) => {
       $('#app')
         .append($('<div>')
           .addClass('typography')
           .on('mouseenter', () => {
-            R.forEach(prop => {
-              $('.selectize-input > .item').each((i, elem) => {
-                if ($(elem).attr('data-value').toLowerCase().trim() === prop.toLowerCase().trim()) {
-                  $(elem).addClass('active');
-                }
-              });
-            }
-            )(R.values(state.combinations[index][state.active]));
+            updateActiveCombinationIndex(index);
           })
           .on('mouseleave', () => {
-            $('.selectize-input > .item').removeClass('active');
+            updateActiveCombinationIndex(null);
           })
           .append($('<div>')
             .addClass('typography-identifier')
@@ -222,7 +231,7 @@
       );
   };
 
-  const renderInputs = () => {
+  const renderInput = () => {
     const activeProperties = R.keys(app[state.active].properties);
     renderActiveCombination();
     $('#inputs').remove();
@@ -245,8 +254,6 @@
             );
         }))
       );
-
-    // ///////////////////////////////////////////////////////////////////////////
 
     $('input').selectize({
       plugins: ['remove_button', 'restore_on_backspace'],
@@ -275,7 +282,7 @@
   // ///////////////////////////////////////////////////////////////////////////
 
   const renderAll = () => {
-    renderInputs();
+    renderInput();
     renderPermutation();
   };
 
@@ -287,6 +294,11 @@
   const updateActiveState = newData => {
     state.active = newData;
     renderAll();
+  };
+
+  const updateActiveCombinationIndex = data => {
+    state.activeCombinationIndex = data;
+    renderActiveInputItem();
   };
 
   renderAll();
