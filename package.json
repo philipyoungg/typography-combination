@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel --es2015 src/src.js | uglifyjs -m -c > typographyPermutation.min.js",
     "start": "harp server & browser-sync start --proxy 'localhost:9000' --files *",
-    "publish": "trash www && harp compile && cd www && surge"
+    "publish": "trash www && npm run build && harp compile && cd www && surge"
   },
   "keywords": [],
   "author": "Philip Young Gunawan <hello@philipyoungg.com> (http://www.philipyoungg.com)",

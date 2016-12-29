@@ -8,18 +8,19 @@ html
     script(src='https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js')
-    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css')
-    link(href='https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Inconsolata|Open+Sans|Crimson|Roboto', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Open+Sans|Crimson|Roboto', rel='stylesheet')
     link(rel='stylesheet', href='main.css')
   body
+    #test
     .wrapper
-      #input-container
+      #input-container.loaded
       #app
     #credits
       p by 
-        a(target='_blank', href='http://www.philipyoungg.com') Philip Young
-    //- script(src='typographyPermutation.min.js')
+        //- a(target='_blank', href='http://www.philipyoungg.com') Philip Young
+    script(src='typographyPermutation.min.js')
     script(src='src/src.js')
+
     script.
       var Tawk_API = Tawk_API || {},
       Tawk_LoadStart = new Date();
@@ -32,4 +33,12 @@ html
       s1.setAttribute('crossorigin', '*');
       s0.parentNode.insertBefore(s1, s0);
       })();
+    script.
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-89567784-1', 'auto');
+      ga('send', 'pageview');
 

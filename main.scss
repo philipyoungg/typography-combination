@@ -15,12 +15,18 @@ body {
 #app {
   transform: translate3d(0, 2rem, 0);
   transition: 0.5s ease-in-out;
-  min-width: 43rem;
+  min-width: 43rem; //fix
   max-width: 90rem;
   opacity: 0;
 }
 
-.loaded#app {
+#input-container {
+  transform: translate3d(-100%, 0, 0);
+  transition: 0.5s ease-in-out;
+}
+
+.loaded#app,
+.loaded#input-container {
   transform: translate3d(0, 0, 0);
   opacity: 1;
 }
@@ -46,13 +52,15 @@ h6 {
   font-family: Inconsolata;
 }
 
-.wrapper {}
-
 #app {
+  position: fixed;
   padding: 2rem 3rem;
   padding-top: 4rem;
   width: calc(100% - 20rem);
   margin-left: 20rem;
+  overflow: scroll;
+  height: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 #input-container {
@@ -69,16 +77,6 @@ h6 {
   padding: 2rem 1rem;
 }
 
-input {
-  font-size: 1rem;
-  width: 100%;
-  padding: 0.75rem;
-  -webkit-appearance: none;
-  border: none;
-  margin-bottom: .5rem;
-  background: #333;
-}
-
 .active-combination {
   width: 100%;
   background: #3e3e3e;
@@ -92,14 +90,14 @@ input {
     border-right: 1px solid #585858;
     cursor: pointer;
     transition: 0.3s ease-in-out;
-    border-bottom: 1px solid #3a3a3a;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 -2px 1px rgba(0, 0, 0, 0.3);
     &:hover {
       background: #363636;
     }
     &.is-active {
       background: #2e2e2e;
       border-bottom: 1px solid transparent;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     }
   }
   &__identifier {
@@ -109,7 +107,6 @@ input {
   &__count {
     font-size: 0.5rem;
     color: #bbb;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 1);
   }
 }
 
@@ -139,7 +136,7 @@ label {
   font-weight: bold;
   margin-bottom: 0.375rem;
   color: #ddd;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .typography {
@@ -182,76 +179,102 @@ label {
   }
 }
 
-.selectize-control.multi .selectize-input .item {
-  font-size: 0.75rem;
-  line-height: 1.5;
-  padding: 0.15rem 0.5rem;
-  margin: 0.2rem;
-  border-radius: 2px;
-  background: #2e2e2e;
-  text-shadow: 0 -2px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  color: #f5f5f5;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.025), transparent);
-}
-
-.selectize-control.multi .selectize-input .item:hover {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05));
-  ;
-}
-
-.selectize-control.multi .selectize-input .item a {
-  font-size: 0.1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  color: #888;
-  padding: 0;
-  width: 1rem;
-  background: #2e2e2e;
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05), transparent);
-}
-
-.selectize-control.multi .selectize-input .item.active {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  background: #3689e9;
-  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-}
-
-.selectize-control.multi .selectize-input>div.active {
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 1);
-  color: white;
-}
-
-.selectize-control.multi .selectize-input .item.active a {
-  background: #3689e9;
-  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
-  color: rgba(255, 255, 255, 0.7);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
+/////// selectize
 textarea,
 .selectize-input {
   padding: .55rem;
   background: #222;
-  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.1);
   border: none;
   font-size: 0.75rem;
   color: #fff;
   width: 100%;
   border-radius: 1px;
+  cursor: text;
 }
 
-.selectize-input.focus {
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.2);
+.selectize-input.has-items {
+  padding: .25rem;
+}
+
+.selectize-input .item {
+  position: relative;
+  display: inline-block;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.3rem 0.5rem;
+  padding-right: 1.5rem; // x button
+  margin: 0.2rem;
+  border-radius: 2px;
+  background: #2e2e2e;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  color: #f5f5f5;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+  background-blend-mode: overlay;
+  cursor: pointer;
+}
+
+.selectize-input .item:hover {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+  background-blend-mode: overlay;
+}
+
+.selectize-input .item a {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 100%;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 0 2px 2px 0;
+  font-size: 0.1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  padding: 0;
+  background: #2e2e2e;
+  line-height: 22px; // hack
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05), transparent);
+}
+
+.selectize-input .item a:hover {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.05));
+  background-blend-mode: overlay;
+}
+
+.selectize-input .item.active {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background: #3689e9;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  background-blend-mode: overlay;
+}
+
+.selectize-control.multi .selectize-input .item.active a {
+  background: #3689e9;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.3), transparent);
+  color: rgba(255, 255, 255, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  background-blend-mode: overlay;
+}
+
+.selectize-input > input {
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  margin-bottom: 0;
+  font-size: 0.75rem;
+  padding: 0;
+  font-size: 0.75rem;
+  color: #eee;
+  text-shadow: 0px 0px 0px #eee;
+  -webkit-text-fill-color: transparent;
+  &:focus {
+    outline: none;
+  }
 }
 
 textarea {
@@ -264,21 +287,19 @@ textarea:focus {
   outline: none;
 }
 
-.selectize-control.multi > .selectize-input.has-items {
-  padding: 0.25rem;
-}
-
-.selectize-dropdown.multi {
+.selectize-dropdown {
+  font-size: 0.75rem;
   color: #fff;
   background: #333;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
   border: none;
+  cursor: pointer;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 .selectize-dropdown .option,
 .selectize-dropdown .create {
   padding: 0.5rem;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
 .selectize-dropdown .active {
@@ -286,20 +307,8 @@ textarea:focus {
   color: white;
 }
 
-.selectize-dropdown .create {
-  background: #444;
-  color: white !important;
-}
-
 .selectize-dropdown [data-selectable] .highlight {
   background: rgba(0, 0, 0, 0.15);
-}
-
-.selectize-input > input {
-  font-size: 0.75rem;
-  color: #eee;
-  text-shadow: 0px 0px 0px #eee;
-  -webkit-text-fill-color: transparent;
 }
 
 .element-on-focus {

@@ -29,6 +29,14 @@
         marginBottom: ['8px'],
         letterSpacing: ['-0.025em'],
         text: ['Guns, Germs, and Steel'],
+        // textShadow: ['none'],
+        // borderRadius: ['0'],
+        // boxShadow: ['none'],
+        // padding: ['none'],
+        // background: ['none'],
+        // backgroundImage: ['none'],
+        // backgroundBlendMode: ['none'],
+        // display: ['block'],
       },
     },
     metatitle: {
@@ -116,18 +124,31 @@
     active: 'title',
     totalPermutation: 1,
     component: R.keys(app),
+    combinations: allCombination(app),
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
   const renderPermutation = () => {
-    const combinations = allCombination(app);
     $('#app').empty();
-
-    combinations.forEach((item, index) => {
+    state.combinations = allCombination(app);
+    state.combinations.forEach((item, index) => {
       $('#app')
         .append($('<div>')
           .addClass('typography')
+          .on('mouseenter', () => {
+            R.forEach(prop => {
+              $('.selectize-input > .item').each((i, elem) => {
+                if ($(elem).attr('data-value').toLowerCase().trim() === prop.toLowerCase().trim()) {
+                  $(elem).addClass('active');
+                }
+              });
+            }
+            )(R.values(state.combinations[index][state.active]));
+          })
+          .on('mouseleave', () => {
+            $('.selectize-input > .item').removeClass('active');
+          })
           .append($('<div>')
             .addClass('typography-identifier')
             .append($('<p>')
@@ -144,9 +165,11 @@
                 if (state.totalPermutation > 1) {
                   state.totalPermutation = 1;
                   $('#app').removeClass('loaded');
+                  $('#input-container').removeClass('loaded');
                   setTimeout(() => {
                     updateAppData(convertToSchema(item));
                     $('#app').addClass('loaded');
+                    $('#input-container').addClass('loaded');
                   }, 500);
                 }
               })
@@ -158,10 +181,10 @@
                 .append($.map(state.component, key =>
                   $('<p>')
                     .css(item[key])
-                    .addClass(`${state.active === item[key] ? 'element-on-focus' : ''}`)
+                    .addClass(`${state.active === key ? 'element-on-focus' : ''}`)
                     .text(`${item[key].text}`)
                     .on('click', () => {
-                      updateActiveState(`${item[key]}`);
+                      updateActiveState(`${key}`);
                     })
                 ))
               )
@@ -226,12 +249,13 @@
     // ///////////////////////////////////////////////////////////////////////////
 
     $('input').selectize({
-      plugins: ['remove_button'],
-      persist: false,
+      plugins: ['remove_button', 'restore_on_backspace'],
+      persist: true,
       create: input => ({
         value: input,
         text: input,
       }),
+      delimiter: ',',
     });
 
     const handleUserInput = e => {
