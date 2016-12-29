@@ -1,15 +1,29 @@
 ((document, window, $, R) => {
-  const sortAllBy = R.path(['fontFamily']);
+  const box = {
+    type: 'box',
+    properties: {
+      fontFamily: ['inherit'],
+      fontSize: ['1rem'],
+      fontWeight: ['400'],
+      fontStyle: ['normal'],
+      textTransform: ['none'],
+      color: ['#333'],
+      lineHeight: ['1.5'],
+      marginBottom: [''],
+      letterSpacing: [''],
+      text: [''],
+    },
+  };
 
   let app = {
     title: {
       type: 'text',
       properties: {
-        fontFamily: ['Lato', 'Playfair Display', 'Open Sans'],
+        fontFamily: ['Lato', 'Playfair Display', 'Fira Sans'],
         fontSize: ['3rem'],
-        fontWeight: [500, 'bold'],
-        // fontStyle: ['normal'],
-        // textTransform: ['none', 'uppercase'],
+        fontWeight: ['600'],
+        fontStyle: ['normal'],
+        textTransform: ['none', 'uppercase'],
         color: ['#333', 'mediumblue'],
         lineHeight: ['1.2'],
         marginBottom: ['8px'],
@@ -22,9 +36,9 @@
       properties: {
         fontFamily: ['sans-serif'],
         fontSize: ['1rem'],
-        fontWeight: ['regular'],
-        // fontStyle: ['italic'],
-        // textTransform: ['none'],
+        fontWeight: ['400'],
+        fontStyle: ['italic'],
+        textTransform: ['none'],
         color: ['#666'],
         lineHeight: ['1.2'],
         marginBottom: ['1.5rem'],
@@ -37,9 +51,9 @@
       properties: {
         fontFamily: ['Roboto', 'Crimson'],
         fontSize: ['1rem'],
-        fontWeight: ['regular'],
-        // fontStyle: ['normal'],
-        // textTransform: ['none'],
+        fontWeight: ['400'],
+        fontStyle: ['normal'],
+        textTransform: ['none'],
         color: ['#333'],
         lineHeight: ['1.5'],
         marginBottom: ['0'],
@@ -58,53 +72,49 @@
 
   // {k: [String]} => [{k: v}]
 
-  // const arg = {
-  //   10: (a, b, c, d, e, f, g, h, i, j) => [a, b, c, d, e, f, g, h, i, j],
-  //   12: (a, b, c, d, e, f, g, h, i, j, k, l) => [a, b, c, d, e, f, g, h, i, j, k, l],
-  // };
+  const flatten = (arr) => [].concat.apply([], arr);
 
+  const cartesianProduct = (...sets) =>
+    sets.reduce((acc, set) =>
+      flatten(acc.map(x => set.map(y => [...x, y]))),
+      [[]]);
 
-  const propLength = R.compose(R.length, R.values, R.prop('properties'), R.head, R.values)(app);
-  const keyLength = R.compose(R.length, R.keys)(app);
-  const appLength = R.sum([propLength, keyLength, -1]);
+  const addSpaceAfterComma = word =>
+    String(word).replace(/,(?=[^\s])/g, ', ');
 
-  const combinationOf = argN =>
-    R.converge(R.map, [
-      R.compose(R.zipObj, R.keys),
-      R.compose(R.apply(R.liftN(argN, R.unapply(R.identity))), R.values),
-    ]);
+  const combinationOf = R.converge(R.map, [
+    R.compose(R.zipObj, R.keys),
+    R.compose(R.apply(cartesianProduct), R.values),
+  ]);
 
   const insideCombination = R.converge(R.zipObj, [
-    R.compose(R.tail, R.keys),
-    R.compose(R.map(combinationOf(propLength)), R.values, R.tail, R.map(R.prop('properties')), R.values),
+    R.compose(R.keys),
+    R.compose(R.map(combinationOf), R.values, R.map(R.prop('properties')), R.values),
   ]);
 
-  const allCombination = R.converge(R.compose(combinationOf(appLength), R.merge), [
-    R.compose(R.prop('properties'), R.head, R.values),
-    insideCombination,
-  ]);
+  const allCombination = R.memoize(R.compose(
+    combinationOf,
+    R.merge(R.prop('properties')(box)),
+    insideCombination)
+  );
 
   // ///////////////////////////////////////////////////////////////////////////
 
   const countTotalPermutation = R.compose(
     R.reduce(R.multiply, 1),
     R.map(R.length),
-    R.values, R.prop('properties'));
+    R.values, R.prop('properties')
+  );
 
   const wrapWithProperties = R.map(R.compose(R.zipObj(['properties']), R.of));
 
-  const convertToSchema = R.converge(R.merge, [
-    R.compose(wrapWithProperties, R.zipObj(['title']), R.of, R.map(R.of), R.filter(R.is(String))),
-    R.compose(wrapWithProperties, R.map(R.map(R.of)), R.filter(R.is(Object))),
-  ]);
+  const convertToSchema = R.compose(wrapWithProperties, R.map(R.map(R.of)), R.filter(R.is(Object)));
 
   // ///////////////////////////////////////////////////////////////////////////
 
   const state = {
     active: 'title',
-  };
-
-  const data = {
+    totalPermutation: 1,
     component: R.keys(app),
   };
 
@@ -113,66 +123,50 @@
   const renderPermutation = () => {
     const combinations = allCombination(app);
     $('#app').empty();
-    R.sortBy(sortAllBy)(combinations).forEach((item, index) => {
-      const {
-        description,
-        metatitle,
-      } = item;
 
-      const localComponent = state.active === 'title' ? item : item[state.active]; // different because it have been rendered
-
+    combinations.forEach((item, index) => {
       $('#app')
-        .append($('<div>', {
-          class: 'typography',
-        })
-        .append($('<div>', {
-          class: 'typography-item-identifier',
-        })
-        .append($('<p>', {
-          class: 'typography-item-identifier__text',
-          text: `${index + 1}. ${localComponent.fontFamily} - ${localComponent.fontSize} - ${localComponent.color} - ${localComponent.lineHeight}`,
-        }))
-        .append($('<p>', {
-          class: 'typography-item-identifier__select',
-          html: 'iterate this style &rarr;',
-        })
-          .on('click', () => {
-            updateApp(R.merge(app, convertToSchema(item)));
-          })
-        ))
-        .append($('<div>', {
-          class: 'typography-item',
-        })
-          .append($('<h1>', {
-            class: state.active === 'title' ? 'element-on-focus' : '',
-          })
-            .text(`${item.text}`)
-            .css(item)
-            .on('click', () => {
-              updateActiveState('title');
-            })
-          )
-          .append($('<p>', {
-            class: state.active === 'metatitle' ? 'element-on-focus' : '',
-          })
-            .text(`${metatitle.text}`)
-            .css(metatitle)
-            .on('click', e => {
-              updateActiveState('metatitle');
-            })
-          )
-          .append($('<p>', {
-            class: state.active === 'description' ? 'element-on-focus' : '',
-          })
-            .text(`${description.text}`)
-            .css(description)
-            .on('click', e => {
-              state.active = 'description';
-              updateActiveState('description');
-            })
-          )
-        )
-      );
+        .append($('<div>')
+          .addClass('typography')
+          .append($('<div>')
+            .addClass('typography-identifier')
+            .append($('<p>')
+              .addClass('typography-identifier__text')
+              .text(`${index + 1}. ${item[state.active].fontFamily} - ${item[state.active].fontSize} - ${item[state.active].color} - ${item[state.active].lineHeight}`)
+            )
+            .append($('<p>')
+              .addClass('typography-identifier__select')
+              .html('iterate this style &rarr;')
+              .css({
+                textDecoration: state.totalPermutation === 1 ? 'line-through' : '',
+              })
+              .on('click', () => {
+                if (state.totalPermutation > 1) {
+                  state.totalPermutation = 1;
+                  $('#app').removeClass('loaded');
+                  setTimeout(() => {
+                    updateAppData(convertToSchema(item));
+                    $('#app').addClass('loaded');
+                  }, 500);
+                }
+              })
+            ))
+            .append($('<div>')
+              .addClass('typography__item')
+              .append($('<div>')
+                .css(item)
+                .append($.map(state.component, key =>
+                  $('<p>')
+                    .css(item[key])
+                    .addClass(`${state.active === item[key] ? 'element-on-focus' : ''}`)
+                    .text(`${item[key].text}`)
+                    .on('click', () => {
+                      updateActiveState(`${item[key]}`);
+                    })
+                ))
+              )
+            )
+        );
     });
   };
 
@@ -181,64 +175,53 @@
   const renderActiveCombination = () => {
     $('.active-combination').remove();
     $('#input-container')
-      .prepend($('<div>', {
-        class: 'active-combination',
-      }));
-    R.forEach(key => {
-      const totalCount = countTotalPermutation(app[key]);
-      $('.active-combination')
-        .append($('<p>', {
-          class: `active-combination__item ${state.active === key ? 'active' : ''}`,
-          text: key === 'title' ? 'title' : key,
-        }).on('click', () => {
-          updateActiveState(key);
-        }).append($('<p>', {
-          class: 'active-combination__count',
-          text: `${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`,
-        })));
-    })(data.component);
+      .prepend($('<div>')
+        .addClass('active-combination')
+        .append(
+          $.map(state.component, key => {
+            const totalCount = countTotalPermutation(app[key]);
+            state.totalPermutation *= totalCount;
+            return $('<div>')
+              .addClass(`active-combination__item ${state.active === key ? 'is-active' : ''}`)
+              .on('click', () => {
+                updateActiveState(key);
+              })
+              .append($('<p>')
+                .addClass('active-combination__identifier')
+                .text(key)
+              )
+              .append($('<p>')
+                .addClass('active-combination__count')
+                .text(`${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`)
+              );
+          })
+        )
+      );
   };
 
   const renderInputs = () => {
+    const activeProperties = R.keys(app[state.active].properties);
     renderActiveCombination();
     $('#inputs').remove();
     $('#input-container')
-      .append($('<div>', {
-        id: 'inputs',
-      }));
-    R.forEach(prop => {
-      if (prop === 'text') {
-        $('#inputs')
-        .append($('<div>')
-          .css({
-            marginBottom: '1rem',
-          })
-          .append($('<label>', {
-            text: prop.replace(/([A-Z])/g, ' $1'),
-          })
-          )
-          .append($('<textarea>', {
-            text: String(app[state.active].properties[prop]).replace(/,(?=[^\s])/g, ', '),
-            name: prop,
-          }))
-        );
-      } else {
-        $('#inputs')
-        .append($('<div>')
-          .css({
-            marginBottom: '1rem',
-          })
-          .append($('<label>', {
-            text: prop.replace(/([A-Z])/g, ' $1'),
-          })
-          )
-          .append($('<input>', {
-            value: String(app[state.active].properties[prop]).replace(/,(?=[^\s])/g, ', '),
-            name: prop,
-          }))
-        );
-      }
-    })(R.keys(app[state.active].properties));
+      .append($('<div>')
+        .attr('id', 'inputs')
+        .append($.map(activeProperties, prop => {
+          const spacedText = addSpaceAfterComma(app[state.active].properties[prop]);
+          return $('<div>')
+            .css({
+              marginBottom: '0.75rem',
+            })
+            .append($('<label>')
+              .text(prop.replace(/([A-Z])/g, ' $1')) // space after capital case
+            )
+            .append($(`${prop === 'text' ? '<textarea>' : '<input>'}`)
+              .text(`${prop === 'text' ? spacedText : ''}`)
+              .attr('value', `${prop !== 'text' ? spacedText : ''}`)
+              .attr('name', prop)
+            );
+        }))
+      );
 
     // ///////////////////////////////////////////////////////////////////////////
 
@@ -251,18 +234,18 @@
       }),
     });
 
-    const updatePermutationOnChange = e => {
+    const handleUserInput = e => {
       const prop = $(e.target).attr('name');
       const value = prop === 'text' ?
         [$(e.target).val()] :
         R.split(',', R.trim($(e.target).val()));
       app[state.active].properties[prop] = value;
-      renderPermutation();
       renderActiveCombination();
+      renderPermutation();
     };
 
-    $('input').on('change', updatePermutationOnChange);
-    $('textarea').on('input', updatePermutationOnChange);
+    $('input').on('change', handleUserInput);
+    $('textarea').on('input', handleUserInput);
   };
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -272,7 +255,7 @@
     renderPermutation();
   };
 
-  const updateApp = newData => {
+  const updateAppData = newData => {
     app = newData;
     renderAll();
   };
@@ -283,4 +266,8 @@
   };
 
   renderAll();
+
+  $(document).ready(() => {
+    $('#app').addClass('loaded');
+  });
 })(document, window, $, R);
