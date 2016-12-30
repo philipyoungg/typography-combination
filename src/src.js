@@ -1,21 +1,8 @@
 ((document, window, $, R) => {
-  const box = {
-    type: 'box',
-    properties: {
-      fontFamily: ['inherit'],
-      fontSize: ['1rem'],
-      fontWeight: ['400'],
-      fontStyle: ['normal'],
-      textTransform: ['none'],
-      color: ['#333'],
-      lineHeight: ['1.5'],
-      marginBottom: [''],
-      letterSpacing: [''],
-      text: [''],
-    },
-  };
+  R.forEach(key =>
+    (window[key] = R[key]))(R.keys(R)); // eslint-disable-line
 
-  let app = {
+  const schema = {
     title: {
       type: 'text',
       properties: {
@@ -23,6 +10,7 @@
         fontSize: ['3rem'],
         fontWeight: ['600'],
         fontStyle: ['normal'],
+        textAlign: ['left'],
         textTransform: ['none', 'uppercase'],
         color: ['#333', 'mediumblue'],
         lineHeight: ['1.2'],
@@ -46,6 +34,7 @@
         fontSize: ['1rem'],
         fontWeight: ['400'],
         fontStyle: ['italic'],
+        textAlign: ['left'],
         textTransform: ['none'],
         color: ['#666'],
         lineHeight: ['1.2'],
@@ -61,6 +50,7 @@
         fontSize: ['1rem'],
         fontWeight: ['400'],
         fontStyle: ['normal'],
+        textAlign: ['left'],
         textTransform: ['none'],
         color: ['#333'],
         lineHeight: ['1.5'],
@@ -72,129 +62,93 @@
       },
     },
   };
-  // const selectizeToObject = data => R.zipObj(['text', 'value'], [data, data]);
+  // const selectizeToObject = data => zipObj(['text', 'value'], [data, data]);
   // const placeholderValues = {
     // fontSize: ['4px', '8px', '16px', '32px', '64px'],
   // };
-  // const placeholderData = R.map(R.map(selectizeToObject), placeholderValues);
+  // const placeholderData = map(map(selectizeToObject), placeholderValues);
 
   // {k: [String]} => [{k: v}]
 
-  const flatten = (arr) => [].concat.apply([], arr);
+  const isMobile = ('ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/));
 
-  const cartesianProduct = (...sets) =>
-    sets.reduce((acc, set) =>
-      flatten(acc.map(x => set.map(y => [...x, y]))),
-      [[]]);
+  const cartesianProduct = unapply(lift(reduce(pipe(xprod, map(flatten))))(head, tail));
 
   const addSpaceAfterComma = word =>
     String(word).replace(/,(?=[^\s])/g, ', ');
 
-  const combinationOf = R.converge(R.map, [
-    R.compose(R.zipObj, R.keys),
-    R.compose(R.apply(cartesianProduct), R.values),
+  const cartesianObject = converge(map, [
+    compose(zipObj, keys),
+    compose(apply(cartesianProduct), values),
   ]);
 
-  const insideCombination = R.converge(R.zipObj, [
-    R.compose(R.keys),
-    R.compose(R.map(combinationOf), R.values, R.map(R.prop('properties')), R.values),
+  const insideCombination = converge(zipObj, [
+    compose(keys),
+    compose(map(cartesianObject), values, map(prop('properties')), values),
   ]);
 
-  const allCombination = R.memoize(R.compose(
-    combinationOf,
-    R.merge(R.prop('properties')(box)),
-    insideCombination)
-  );
+  const allCombination = memoize(compose(cartesianObject, insideCombination));
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  const countTotalPermutation = R.compose(
-    R.reduce(R.multiply, 1),
-    R.map(R.length),
-    R.values, R.prop('properties')
+  const countTotalPermutation = compose(
+    reduce(multiply, 1),
+    map(length),
+    values, prop('properties')
   );
-
-  const wrapWithProperties = R.map(R.compose(R.zipObj(['properties']), R.of));
-
-  const convertToSchema = R.compose(wrapWithProperties, R.map(R.map(R.of)), R.filter(R.is(Object)));
+  const wrapWithProperties = map(compose(zipObj(['properties']), of));
+  const convertToSchema = compose(wrapWithProperties, map(map(of)), filter(is(Object)));
+  const cleanText = compose(toLower, trim);
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  const state = {
-    active: 'title',
-    totalPermutation: 1,
-    component: R.keys(app),
-    combination: allCombination(app),
+  const initialCombinations = allCombination(schema);
+
+  let state = {
+    app: schema,
+    activeComponent: compose(head, keys)(schema),
+    component: keys(schema),
+    combination: initialCombinations,
+    totalPermutation: initialCombinations.length,
     activeCombinationIndex: null,
   };
 
   // ///////////////////////////////////////////////////////////////////////////
 
-  const renderActiveInputItem = () => {
-    if (state.activeCombinationIndex !== null) {
-      R.forEach(prop => {
-        $('.selectize-input > .item').each((i, elem) => {
-          if ($(elem).attr('data-value').toLowerCase().trim() === prop.toLowerCase().trim()) {
-            $(elem).addClass('active');
-          }
-        });
-      })(R.values(state.combination[state.activeCombinationIndex][state.active]));
-    } else {
-      $('.selectize-input > .item').removeClass('active');
-    }
-  };
-
   const renderPermutation = () => {
     $('#app').empty();
-    renderActiveInputItem();
-    state.combination = allCombination(app);
+    console.log(state.totalPermutation);
     state.combination.forEach((item, index) => {
       $('#app')
         .append($('<div>')
           .addClass('typography')
-          .on('mouseenter', () => {
-            updateActiveCombinationIndex(index);
-          })
-          .on('mouseleave', () => {
-            updateActiveCombinationIndex(null);
-          })
+          .attr('combination-index', index)
+          .on('mouseenter touchstart mouseleave', handleActiveCombinationIndex)
           .append($('<div>')
             .addClass('typography-identifier')
             .append($('<p>')
               .addClass('typography-identifier__text')
-              .text(`${index + 1}. ${item[state.active].fontFamily} - ${item[state.active].fontSize} - ${item[state.active].color} - ${item[state.active].lineHeight}`)
+              .text(`Artboard ${index + 1}`)
             )
             .append($('<p>')
               .addClass('typography-identifier__select')
               .html('iterate this style &rarr;')
+              .attr('combination-index', index)
               .css({
                 textDecoration: state.totalPermutation === 1 ? 'line-through' : '',
               })
-              .on('click', () => {
-                if (state.totalPermutation > 1) {
-                  state.totalPermutation = 1;
-                  $('#app').removeClass('loaded');
-                  $('#input-container').removeClass('loaded');
-                  setTimeout(() => {
-                    updateAppData(convertToSchema(item));
-                    $('#app').addClass('loaded');
-                    $('#input-container').addClass('loaded');
-                  }, 500);
-                }
-              })
+              .on('click', handleCombinationToOne)
             ))
             .append($('<div>')
               .addClass('typography__item')
-              .append($('<div>')
-                .css(item)
+              .append($('<div>') // faux container
                 .append($.map(state.component, key =>
                   $('<p>')
+                    .attr('component-name', key)
                     .css(item[key])
-                    .addClass(`${state.active === key ? 'element-on-focus' : ''}`)
+                    .addClass(`${state.activeComponent === key ? 'element-on-focus' : ''}`)
                     .text(`${item[key].text}`)
-                    .on('click', () => {
-                      updateActiveState(`${key}`);
-                    })
+                    .on('click', handleActiveState)
                 ))
               )
             )
@@ -205,41 +159,38 @@
   // ///////////////////////////////////////////////////////////////////////////
 
   const renderActiveCombination = () => {
-    $('.active-combination').remove();
-    $('#input-container')
-      .prepend($('<div>')
-        .addClass('active-combination')
-        .append(
-          $.map(state.component, key => {
-            const totalCount = countTotalPermutation(app[key]);
-            state.totalPermutation *= totalCount;
-            return $('<div>')
-              .addClass(`active-combination__item ${state.active === key ? 'is-active' : ''}`)
-              .on('click', () => {
-                updateActiveState(key);
-              })
-              .append($('<p>')
-                .addClass('active-combination__identifier')
-                .text(key)
-              )
-              .append($('<p>')
-                .addClass('active-combination__count')
-                .text(`${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`)
-              );
-          })
-        )
+    $('.active-combination').empty();
+    $('.active-combination')
+      .append(
+        $.map(state.component, key => {
+          const totalCount = countTotalPermutation(state.app[key]);
+          return $('<div>')
+            .addClass(`active-combination__item ${state.activeComponent === key ? 'is-active' : ''}`)
+            .attr('component-name', key)
+            .on('click', handleActiveState)
+            .append($('<p>')
+              .addClass('active-combination__identifier')
+              .text(key)
+            )
+            .append($('<p>')
+              .addClass('active-combination__count')
+              .text(`${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`)
+            );
+        })
       );
   };
 
   const renderInput = () => {
-    const activeProperties = R.keys(app[state.active].properties);
+    const activeProperties = compose(keys, path(['app', state.activeComponent, 'properties']))(state);
     renderActiveCombination();
-    $('#inputs').remove();
-    $('#input-container')
-      .append($('<div>')
-        .attr('id', 'inputs')
+    $('#inputs').removeClass('loaded');
+    if (state.activeComponent) {
+      $('#empty-state').removeClass('loaded');
+      setTimeout(() => {
+        $('#inputs').empty();
+        $('#inputs')
         .append($.map(activeProperties, prop => {
-          const spacedText = addSpaceAfterComma(app[state.active].properties[prop]);
+          const spacedText = addSpaceAfterComma(state.app[state.activeComponent].properties[prop]); // fix
           return $('<div>')
             .css({
               marginBottom: '0.75rem',
@@ -252,31 +203,70 @@
               .attr('value', `${prop !== 'text' ? spacedText : ''}`)
               .attr('name', prop)
             );
-        }))
-      );
+        }));
 
-    $('input').selectize({
-      plugins: ['remove_button', 'restore_on_backspace'],
-      persist: true,
-      create: input => ({
-        value: input,
-        text: input,
-      }),
-      delimiter: ',',
-    });
+        $('input').selectize({
+          plugins: ['remove_button', 'restore_on_backspace'],
+          persist: true,
+          create: input => ({
+            value: input,
+            text: input,
+          }),
+          delimiter: ',',
+        });
 
-    const handleUserInput = e => {
-      const prop = $(e.target).attr('name');
-      const value = prop === 'text' ?
-        [$(e.target).val()] :
-        R.split(',', R.trim($(e.target).val()));
-      app[state.active].properties[prop] = value;
-      renderActiveCombination();
-      renderPermutation();
-    };
+        updateView.activeInputItem();
 
-    $('input').on('change', handleUserInput);
-    $('textarea').on('input', handleUserInput);
+        $('input').on('change', handleUserInput);
+        $('textarea').on('input', handleUserInput);
+
+        if (isMobile) {
+          $('.selectize-input > .item').css({
+            transition: 'none',
+          });
+          $('.selectize-input > .item a').css({
+            transition: 'none',
+          });
+        }
+
+        $('#inputs').addClass('loaded');
+      }, 150);
+    } else {
+      setTimeout(() => {
+        $('#empty-state').addClass('loaded');
+      }, 150);
+    }
+  };
+
+  // ///////////////////////////////////////////////////////////////////////////
+
+  const updateView = {
+    activeInputItem: () => {
+      const $items = $('.selectize-input > .item');
+      const allProps = compose(values, path([state.activeCombinationIndex, state.activeComponent]))(state.combination);
+      const iterateActiveClass = forEach(prop => {
+        $items.each((i, elem) => {
+          if (cleanText(prop) === cleanText($(elem).attr('data-value'))) {
+            $(elem).addClass('active');
+          }
+        });
+      });
+
+      ifElse(
+        isNil,
+        always($items.removeClass('active')),
+        always(iterateActiveClass(allProps))
+      )(state.activeCombinationIndex);
+    },
+    activeComponentProperties: () => {
+      const $components = $('#app .typography__item p');
+      $components.removeClass('element-on-focus');
+      $components.each((index, elem) => {
+        if ($(elem).attr('component-name') === state.activeComponent) {
+          $(elem).addClass('element-on-focus');
+        }
+      });
+    },
   };
 
   // ///////////////////////////////////////////////////////////////////////////
@@ -286,24 +276,72 @@
     renderPermutation();
   };
 
-  const updateAppData = newData => {
-    app = newData;
-    renderAll();
+  const handleUserInput = function () {
+    const inputVal = $(this).val();
+    const prop = $(this).attr('name');
+    const value = prop === 'text' ? of(inputVal) : split(',', trim(inputVal));
+    state = assocPath(['app', state.activeComponent, 'properties', prop], value)(state);
+    state = assoc('combination', allCombination(state.app))(state);
+    state = assoc('totalPermutation', length(state.combination))(state);
+    renderActiveCombination();
+    renderPermutation();
   };
 
-  const updateActiveState = newData => {
-    state.active = newData;
-    renderAll();
+  const handleActiveState = function (e) {
+    const selectedComponentName = $(this).attr('component-name');
+
+    if (state.activeComponent !== selectedComponentName) {
+      if (e.target.className !== 'typography-identifier__select') { // SUPER HACK.
+        state = assoc('activeComponent', selectedComponentName)(state);
+      }
+      updateView.activeComponentProperties();
+      renderInput();
+    }
+    e.stopPropagation();
   };
 
-  const updateActiveCombinationIndex = data => {
-    state.activeCombinationIndex = data;
-    renderActiveInputItem();
+  const handleActiveCombinationIndex = function (e) {
+    const typographyIndex = $(this).attr('combination-index');
+    state = assoc('activeCombinationIndex',
+      ifElse(
+        propEq('type', 'mouseleave'),
+        always(null),
+        always(typographyIndex)
+      )(e)
+    )(state);
+    updateView.activeInputItem();
   };
 
-  renderAll();
+  const handleCombinationToOne = function () {
+    const typographyIndex = $(this).attr('combination-index');
+    if (state.totalPermutation > 1) {
+      state = assoc('totalPermutation', 1)(state);
+      state = assoc('activeCombinationIndex', 0)(state);
+      $('#app').removeClass('loaded');
+      $('#input-container').removeClass('loaded');
+      $('#credits').removeClass('loaded');
+      setTimeout(() => {
+        state = assoc('app', convertToSchema(state.combination[typographyIndex]))(state);
+        state = assoc('combination', allCombination(state.app))(state);
+        state = assoc('totalPermutation', length(state.combination))(state);
+        renderPermutation();
+        renderInput();
+        $('#app').addClass('loaded');
+        $('#input-container').addClass('loaded');
+        $('#credits').addClass('loaded');
+      }, 400);
+    }
+  };
 
   $(document).ready(() => {
-    $('#app').addClass('loaded');
+    renderAll();
+    $('#input-container').on('touchstart', handleActiveCombinationIndex);
+    $('#app').on('click', handleActiveState);
+    setTimeout(() => {
+      $('#app').addClass('loaded');
+      $('#input-container').addClass('loaded');
+      $('#inputs').addClass('loaded');
+      $('#credits').addClass('loaded');
+    }, 100);
   });
 })(document, window, $, R);
