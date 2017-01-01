@@ -51,7 +51,8 @@ body {
   transition: 0.4s ease-in-out;
 }
 
-#inputs {
+#inputs,
+.active-combination {
   transform: translateY(0.25rem);
   opacity: 0;
   transition: 0.15s ease-in-out;
@@ -83,7 +84,8 @@ body {
 }
 
 .loaded#inputs,
-.loaded#empty-state {
+.loaded#empty-state,
+.loaded.active-combination {
   visibility: visible;
   transform: none;
   opacity: 1;
@@ -197,6 +199,10 @@ h6 {
 
 #credits a {
   color: #888;
+}
+
+.input-and-label {
+  margin-bottom: 0.75rem;
 }
 
 label {
@@ -405,8 +411,14 @@ textarea:focus {
   background: rgba(0, 0, 0, 0.15);
 }
 
-.element-on-focus {
-  outline: 1px solid rgba(0, 0, 0, 0.1)
+#app p {
+  background: transparent;
+  cursor: pointer;
+}
+
+#app p.element-on-focus {
+  background: rgba(236, 133, 168, 0.15);
+  transition: 0.3s ease-in-out;
 }
 
 @media screen and (min-width: 100em) {
