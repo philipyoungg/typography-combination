@@ -1,6 +1,7 @@
 import { compose, keys, values, head, path, forEach } from 'Ramda';
 import { forEachIndexed, addSpaceAfterComma, isMobile, cleanText } from './helpers';
 import { countTotalPermutation } from './stateManipulation';
+import defaultFormOptions from './defaultFormOptions';
 
 // Render View
 // ==========================================
@@ -95,30 +96,38 @@ const view = {
         setTimeout(() => {
           $('#inputs').empty();
           $('#inputs')
-      .append($.map(activeProperties, prop => {
-        const propertyText = path([s.activeComponent, 'properties', prop])(s.app);
-        const spacedText = addSpaceAfterComma(propertyText);
-        return $('<div>')
-          .addClass('input-and-label')
-          .append($('<label>')
-            .text(prop.replace(/([A-Z])/g, ' $1'))  // space after capital case
-          )
-          .append($(`${prop === 'text' ? '<textarea>' : '<input>'}`)
-            .text(`${prop === 'text' ? spacedText : ''}`)
-            .attr('value', `${prop !== 'text' ? spacedText : ''}`)
-            .attr('name', prop)
-          );
-      }));
+            .append($.map(activeProperties, prop => {
+              const propertyText = path([s.activeComponent, 'properties', prop])(s.app);
+              const spacedText = addSpaceAfterComma(propertyText);
+              return $('<div>')
+                .addClass('input-and-label')
+                .append($('<label>')
+                  .text(prop.replace(/([A-Z])/g, ' $1'))  // space after capital case
+                )
+                .append($(`${prop === 'text' ? '<textarea>' : '<input>'}`)
+                  .text(`${prop === 'text' ? spacedText : ''}`)
+                  .attr('value', `${prop !== 'text' ? spacedText : ''}`)
+                  .attr('name', prop)
+                );
+            }));
 
-          $('input').selectize({
-            plugins: ['remove_button', 'restore_on_backspace'],
-            persist: true,
-            create: input => ({
-              value: input,
-              text: input,
-            }),
-            delimiter: ',',
+          $('input').each((idx, item) => {
+            const inputName = $(item).attr('name');
+            $(item).selectize({
+              plugins: ['remove_button', 'restore_on_backspace'],
+              persist: true,
+              create: input => ({
+                value: input,
+                text: input,
+              }),
+              delimiter: ',',
+              options: defaultFormOptions[inputName],
+              items: s.app[s.activeComponent].properties[inputName],
+            });
           });
+
+        // options: defaultFormOptions[inputName],
+              // items: compose(values, path([s.activeComponent, 'properties']))(s.app)
 
           view.update.activeInputItem(store);
 
@@ -155,11 +164,8 @@ const view = {
           }
         });
       });
-      if (s.activeCombinationIndex === null) {
-        $items.removeClass('active');
-      } else {
-        iterateActiveClass(allProps);
-      }
+      $items.removeClass('active');
+      if (s.activeCombinationIndex !== null) iterateActiveClass(allProps);
     },
 
     activeComponent: (store) => {
