@@ -1,7 +1,4 @@
-// Schema
-// ==========================================
-
-const schema = {
+export default {
   headline: {
     type: 'text',
     properties: {
@@ -16,14 +13,14 @@ const schema = {
       marginBottom: ['8px'],
       letterSpacing: ['-0.025em'],
       text: ['Guns, Germs, and Steel'],
-      // textShadow: ['none'],
-      // borderRadius: ['0'],
-      // boxShadow: ['none'],
-      // padding: ['none'],
-      // background: ['none'],
-      // backgroundImage: ['none'],
-      // backgroundBlendMode: ['none'],
-      // display: ['block'],
+        // textShadow: ['none'],
+        // borderRadius: ['0'],
+        // boxShadow: ['none'],
+        // padding: ['none'],
+        // background: ['none'],
+        // backgroundImage: ['none'],
+        // backgroundBlendMode: ['none'],
+        // display: ['block'],
     },
   },
   subheadline: {
@@ -61,5 +58,3 @@ const schema = {
     },
   },
 };
-
-export default schema;

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "filewatcher src/*.js 'npm run build'",
-    "build": "babel --es2015 src/index.js | uglifyjs -m -c > app.min.js",
+    "build": "rollup src/index.js -f iife --globals Ramda:R | babel --es2015 | uglifyjs -m -c > app.min.js",
     "start": "npm run watch & harp server & browser-sync start --proxy 'localhost:9000' --files index.jade app.min.js",
     "publish": "trash www && npm run build && harp compile && cd www && surge"
   },

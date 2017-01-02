@@ -16,6 +16,5 @@ export const cleanText = compose(toLower, trim);
 // stringToArray :: String -> [String]
 export const stringToArray = compose(map(trim), split(','));
 
-
 // addSpaceAfterComma :: String -> String
 export const addSpaceAfterComma = word => String(word).replace(/,(?=[^\s])/g, ', ');
