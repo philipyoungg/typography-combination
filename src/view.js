@@ -15,9 +15,9 @@ const view = {
         .append($('<div>')
           .addClass('typography')
           .attr('combination-index', index)
-          .on('mouseenter touchstart mouseleave', function(e) { // eslint-disable-line
-            handlers.changeActiveCombinationIndex.apply(this, [store, view, e]);
-          })
+          .on('mouseenter touchstart mouseleave',
+            handlers.changeActiveCombinationIndex.bind(null, store, view)
+          )
           .append($('<div>')
             .addClass('typography-identifier')
             .append($('<p>')
@@ -31,9 +31,9 @@ const view = {
               .css({
                 textDecoration: state.totalPermutation === 1 ? 'line-through' : '',
               })
-              .on('click', function(e) { // eslint-disable-line
-                handlers.reduceToOneCombination.apply(this, [store, view, e]);
-              })
+              .on('click',
+                handlers.reduceToOneCombination.bind(null, store, view)
+              )
             ))
             .append($('<div>')
               .addClass('typography__item')
@@ -44,9 +44,9 @@ const view = {
                     .css(item[key])
                     .addClass(`${state.activeComponent === key ? 'element-on-focus' : ''}`)
                     .text(`${item[key].text}`)
-                    .on('click', function(e) { // eslint-disable-line
-                      handlers.changeActiveComponent.apply(this, [store, view, e]);
-                    })
+                    .on('click',
+                      handlers.changeActiveComponent.bind(null, store, view)
+                    )
                 ))
               )
             )
@@ -66,9 +66,9 @@ const view = {
           return $('<div>')
             .addClass(`active-combination__item ${s.activeComponent === key ? 'is-active' : ''}`)
             .attr('component-name', key)
-            .on('click', function(e) { // eslint-disable-line
-              handlers.changeActiveComponent.apply(this, [store, view, e]);
-            })
+            .on('click',
+              handlers.changeActiveComponent.bind(null, store, view)
+            )
             .append($('<p>')
               .addClass('active-combination__identifier')
               .text(key)
@@ -122,12 +122,8 @@ const view = {
 
           view.update.activeInputItem(store);
 
-          $('input').on('change', function(e) { // eslint-disable-line
-            handlers.userInput.apply(this, [store, view]);
-          });
-          $('textarea').on('input', function(e) { // eslint-disable-line
-            handlers.userInput.apply(this, [store, view]);
-          });
+          $('input').on('change', handlers.userInput.bind(null, store, view));
+          $('textarea').on('input', handlers.userInput.bind(null, store, view));
 
           if (isMobile) {
             $('.selectize-input > .item').css({
@@ -147,7 +143,10 @@ const view = {
     activeInputItem: (store) => {
       const s = store.state;
       const $items = $('.selectize-input > .item');
-      const allProps = compose(values, path([s.activeCombinationIndex, s.activeComponent]))(s.combination);
+      const allProps = compose(
+        values,
+        path([s.activeCombinationIndex, s.activeComponent])
+      )(s.combination);
       const iterateActiveClass = forEach(prop => {
         $items.each((i, elem) => {
           const dataValue = $(elem).attr('data-value');

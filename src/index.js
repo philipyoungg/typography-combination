@@ -26,12 +26,12 @@ const store = {
 // ==========================================
 
 $(document).ready(() => {
-  forEach(v => v(store, handlers), values(view.render));
-  $('#input-container').on('touchstart', function(e) { // eslint-disable-line
-    handlers.changeActiveCombinationIndex.apply(this, [store, view, e]);
-  });
-  $('#app').on('click', function(e) { // eslint-disable-line
-    handlers.changeActiveComponent.apply(this, [store, view, e]);
-  });
+  forEach(v => v(store, handlers))(values(view.render));
+  $('#input-container').on('touchstart', 
+    handlers.changeActiveCombinationIndex.bind(null, store, view)
+  );
+  $('#app').on('click',
+    handlers.changeActiveComponent.bind(null, store, view)
+  );
   $('#app').addClass('loaded');
 });

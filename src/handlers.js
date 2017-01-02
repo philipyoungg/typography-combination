@@ -1,4 +1,4 @@
-import { assocPath, of, merge } from 'Ramda';
+import { assocPath, of, merge, length } from 'Ramda';
 import { stringToArray } from './helpers';
 import { allCombination, convertToSchema } from './stateManipulation';
 
@@ -7,10 +7,10 @@ import { allCombination, convertToSchema } from './stateManipulation';
 // ==========================================
 
 const handlers = {
-  userInput(store, view) {
+  userInput(store, view, e) {
     const { state, updateState } = store;
-    const inputVal = $(this).val();
-    const prop = $(this).attr('name');
+    const inputVal = $(e.currentTarget).val();
+    const prop = $(e.currentTarget).attr('name');
     const value = prop === 'text' ? of(inputVal) : stringToArray(inputVal);
     const stateWithNewProps = assocPath(['app', state.activeComponent, 'properties', prop], value)(state);
     const newCombination = allCombination(stateWithNewProps.app);
@@ -25,7 +25,7 @@ const handlers = {
 
   changeActiveComponent(store, view, e) {
     const { state, updateState } = store;
-    const selectedComponentName = $(this).attr('component-name');
+    const selectedComponentName = $(e.currentTarget).attr('component-name');
 
     if (state.activeComponent !== selectedComponentName) {
       if (e.target.className !== 'typography-identifier__select') {   // SUPER HACK.
@@ -41,16 +41,16 @@ const handlers = {
   },
 
   changeActiveCombinationIndex(store, view, e) {
-    const typographyIndex = $(this).attr('combination-index');
+    const typographyIndex = $(e.currentTarget).attr('combination-index');
     store.updateState({
       activeCombinationIndex: e.type === 'mouseleave' ? null : typographyIndex,
     });
     view.update.activeInputItem(store, handlers);
   },
 
-  reduceToOneCombination(store, view) {
+  reduceToOneCombination(store, view, e) {
     const { state, updateState } = store;
-    const typographyIndex = $(this).attr('combination-index');
+    const typographyIndex = $(e.currentTarget).attr('combination-index');
     if (state.totalPermutation > 1) {
       $('#app').removeClass('loaded');
       $('#input-container').removeClass('loaded');
