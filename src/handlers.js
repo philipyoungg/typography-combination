@@ -8,6 +8,8 @@ import { allCombination, convertToSchema } from './stateManipulation';
 
 const handlers = {
   userInput(store, view, e) {
+    Rx.Observable.fromEvent($('input'), 'change')
+      .map(e => $(e).attr())
     const { state, updateState } = store;
     const inputVal = $(e.currentTarget).val();
     const prop = $(e.currentTarget).attr('name');

@@ -1,4 +1,5 @@
-import { forEach, addIndex, compose, toLower, trim, map, split } from 'Ramda';
+const R = require('Ramda');
+const { forEach, addIndex, compose, toLower, trim, map, split } = R;
 
 // Helpers
 // ==========================================

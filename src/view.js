@@ -1,5 +1,5 @@
 import { compose, keys, values, head, path, forEach } from 'Ramda';
-import { forEachIndexed, addSpaceAfterComma, isMobile, cleanText } from './helpers';
+import { addSpaceAfterComma, isMobile, cleanText } from './helpers';
 import { countTotalPermutation } from './stateManipulation';
 import defaultFormOptions from './defaultFormOptions';
 
@@ -10,10 +10,22 @@ const view = {
   render: {
     combination: (store, handlers) => {
       const { state } = store;
-      $('#app').empty();
-      forEachIndexed((item, index) => {
-        $('#app')
-        .append($('<div>')
+      // const context = {
+      //   combination: state.combination,
+      // };
+      // const result = Handlebars.compile($('#tmpl-typography').html())(context);
+      // $('#app').html(result);
+      // $('.typography__item').each((idx, item) => {
+      //   $(item).children('p').each((i, comp) => {
+      //     const componentName = $(comp).attr('name');
+      //     const style = R.omit(['text'], state.combination[idx][componentName]);
+      //     $(comp).css(style);
+      //   });
+      // });
+      $('#app')
+      .empty()
+      .append($.map(state.combination, (item, index) =>
+        $('<div>')
           .addClass('typography')
           .attr('combination-index', index)
           .on('mouseenter touchstart mouseleave',
@@ -35,7 +47,7 @@ const view = {
               .on('click',
                 handlers.reduceToOneCombination.bind(null, store, view)
               )
-            ))
+          ))
             .append($('<div>')
               .addClass('typography__item')
               .append($('<div>')
@@ -51,21 +63,19 @@ const view = {
                 ))
               )
             )
-          );
-      })(state.combination);
+      ));
     },
 
     activeCombination: (store, handlers) => {
-      const s = store.state;
-      $('.active-combination').addClass('loaded');
-      const availableComponent = compose(keys, head)(s.combination);
-      $('.active-combination').empty();
+      const { state } = store;
+      const availableComponent = compose(keys, head)(state.combination);
       $('.active-combination')
-      .append(
-        $.map(availableComponent, key => {
-          const totalCount = countTotalPermutation(s.app[key]);
+        .addClass('loaded')
+        .empty()
+        .append($.map(availableComponent, key => {
+          const totalCount = countTotalPermutation(state.app[key]);
           return $('<div>')
-            .addClass(`active-combination__item ${s.activeComponent === key ? 'is-active' : ''}`)
+            .addClass(`active-combination__item ${state.activeComponent === key ? 'is-active' : ''}`)
             .attr('component-name', key)
             .on('click',
               handlers.changeActiveComponent.bind(null, store, view)
@@ -78,8 +88,7 @@ const view = {
               .addClass('active-combination__count')
               .text(`${totalCount} ${totalCount > 1 ? 'combinations' : 'combination'}`)
             );
-        })
-      );
+        }));
     },
 
     input: (store, handlers) => {
