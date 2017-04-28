@@ -8,7 +8,9 @@ html
     script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/ramda/0.22.1/ramda.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/shepherd/1.8.1/css/shepherd-theme-arrows.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/shepherd/1.8.1/js/shepherd.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js')
     link(href='https://fonts.googleapis.com/css?family=Playfair+Display|Lato|Open+Sans|Crimson|Roboto|Fira+Sans|Montserrat|Karla|Cardo|Abril+Fatface', rel='stylesheet')
     link(rel='stylesheet', href='main.css')
@@ -24,17 +26,6 @@ html
     #credits
       p by 
         a(target='_blank', href='http://www.philipyoungg.com') Philip Young
-    //- script(id='tmpl-typography' type='text/x-handlebars-template')
-    //-   {{#each combination}}
-    //-   .typography
-    //-     .typography-identifier
-    //-       .typography-identifier__text Combination {{@index}}
-    //-       .typography-identifier__select iterate this style &rarr;
-    //-     .typography__item
-    //-       {{#each this}}
-    //-       p(name='{{@key}}') {{this.text}}
-    //-       {{/each}}
-    //-   {{/each}}
     script(src='app.min.js')
     script.
       var Tawk_API = Tawk_API || {},

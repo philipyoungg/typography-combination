@@ -4,8 +4,8 @@
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
-html,
-body {
+body,
+html {
   font-family: -apple-system, Roboto, sans-serif;
   line-height: 1.3;
   color: #333;
@@ -16,6 +16,7 @@ body {
   position: absolute;
   height: 100%;
   width: 100%;
+
   &__content {
     position: absolute;
     top: 30%;
@@ -28,6 +29,7 @@ body {
     box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.1), inset 0 3px 10px 2px rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 3px rgba(255, 255, 255, 0.05);
     border-radius: 100%;
   }
+
   h2 {
     font-weight: normal;
     text-align: center;
@@ -40,34 +42,34 @@ body {
 
 #app {
   transform: translateY(2rem);
-  transition: 0.5s ease-in-out;
+  transition: .5s ease-in-out;
   min-width: 43rem; //fix
-  max-width: 90rem;
+  max-width: calc(100% - 20rem);
   opacity: 0;
 }
 
 #input-container {
   transform: translateX(-100%);
-  transition: 0.4s ease-in-out;
+  transition: .4s ease-in-out;
 }
 
 #inputs,
 .active-combination {
   transform: translateY(0.25rem);
   opacity: 0;
-  transition: 0.15s ease-in-out;
+  transition: .15s ease-in-out;
 }
 
 #empty-state {
   transform: translateY(0.25rem);
   opacity: 0;
-  transition: 0.15s ease-in-out;
+  transition: .15s ease-in-out;
   visibility: hidden;
 }
 
 #credits {
   transform: translateX(-100%);
-  transition: 0.4s ease-in-out;
+  transition: .4s ease-in-out;
 }
 
 .loaded#app {
@@ -83,8 +85,8 @@ body {
   transform: none;
 }
 
-.loaded#inputs,
 .loaded#empty-state,
+.loaded#inputs,
 .loaded.active-combination {
   visibility: visible;
   transform: none;
@@ -104,7 +106,7 @@ h1 {
 
 h6 {
   color: silver;
-  font-size: 0.6rem;
+  font-size: .6rem;
   margin-bottom: 1rem;
 }
 
@@ -114,8 +116,7 @@ h6 {
 
 #app {
   position: fixed;
-  padding: 2rem 3rem;
-  padding-top: 4rem;
+  padding: 4rem 3rem 2rem;
   width: calc(100% - 20rem);
   margin-left: 20rem;
   overflow: scroll;
@@ -131,15 +132,15 @@ h6 {
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
   box-shadow: 1px 0 2px rgba(0, 0, 0, 0.05), 3px 0 5px 3px rgba(0, 0, 0, 0.05);
+
   & > p {
     color: white;
     text-align: center;
     margin-top: 3rem;
-    font-size: 0.875rem;
+    font-size: .875rem;
     display: none;
   }
 }
-
 @media screen and (max-width: 30em) {
   #input-container > p {
     display: block;
@@ -154,32 +155,37 @@ h6 {
 .active-combination {
   width: 100%;
   background: #3e3e3e;
+
   &__item {
     display: inline-block;
     width: 33.33%;
     color: white;
-    font-size: 0.75rem;
+    font-size: .75rem;
     text-align: center;
-    padding: 0.75rem 0;
+    padding: .75rem 0;
     border-right: 1px solid #585858;
     cursor: pointer;
     text-shadow: 0 -2px 1px rgba(0, 0, 0, 0.3);
-    transition: 0.3s ease-in-out;
+    transition: .3s ease-in-out;
+
     &:hover {
       background: #363636;
     }
+
     &.is-active {
       background: #2e2e2e;
       border-bottom: 1px solid transparent;
       text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     }
   }
+
   &__identifier {
     font-weight: bold;
-    margin-bottom: 0.0625rem;
+    margin-bottom: .0625rem;
   }
+
   &__count {
-    font-size: 0.5rem;
+    font-size: .5rem;
     color: #bbb;
   }
 }
@@ -191,10 +197,10 @@ h6 {
   width: 20rem;
   z-index: 3;
   color: #888;
-  padding: 0.5rem 1rem;
+  padding: .5rem 1rem;
   border-top: 1px solid #323232;
   background: #1c1c1c;
-  font-size: 0.75rem;
+  font-size: .75rem;
 }
 
 #credits a {
@@ -202,17 +208,17 @@ h6 {
 }
 
 .input-and-label {
-  margin-bottom: 0.75rem;
+  margin-bottom: .75rem;
 }
 
 label {
   display: block;
-  font-size: 0.5rem;
-  letter-spacing: 0.25px;
-  margin-left: 0.25rem;
+  font-size: .5rem;
+  letter-spacing: .25px;
+  margin-left: .25rem;
   text-transform: uppercase;
   font-weight: bold;
-  margin-bottom: 0.375rem;
+  margin-bottom: .375rem;
   color: #ddd;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
 }
@@ -220,14 +226,14 @@ label {
 .typography {
   max-width: 40rem;
   margin: 0 auto;
+
   &__item {
     position: relative;
     background: white;
     padding: 3rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.05);
-    margin: 0 auto;
-    margin-bottom: 2rem;
-    transition: 0.3s ease-in-out;
+    margin: 0 auto 2rem;
+    transition: .3s ease-in-out;
   }
 }
 
@@ -242,7 +248,7 @@ label {
   height: 100%;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.025), 0 1px 3px rgba(0, 0, 0, 0.05), 0 3px 10px 5px rgba(0, 0, 0, 0.05);
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity .3s ease-in-out;
 }
 
 .typography__item:hover::before {
@@ -251,25 +257,29 @@ label {
 
 .typography-identifier {
   color: #aaa;
-  margin-bottom: 0.75rem;
+  margin-bottom: .75rem;
   line-height: 1.5;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+
   &:after {
     clear: both;
     display: table;
     content: '';
     height: 0;
   }
+
   &__text {
     text-align: left;
     float: left;
   }
+
   &__select {
     text-align: right;
     float: right;
+
     &:hover {
       cursor: pointer;
       text-decoration: underline;
@@ -278,13 +288,13 @@ label {
 }
 
 /////// selectize
-textarea,
-.selectize-input {
+.selectize-input,
+textarea {
   padding: .55rem;
   background: #222;
   box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.1);
   border: none;
-  font-size: 0.75rem;
+  font-size: .75rem;
   color: #fff;
   width: 100%;
   border-radius: 1px;
@@ -298,11 +308,10 @@ textarea,
 .selectize-input .item {
   position: relative;
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: .75rem;
   line-height: 1;
-  padding: 0.3rem 0.5rem;
-  padding-right: 1.5rem; // x button
-  margin: 0.2rem;
+  padding: .3rem 1.5rem .3rem .5rem; // x button
+  margin: .2rem;
   border-radius: 2px;
   background: #2e2e2e;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
@@ -311,7 +320,7 @@ textarea,
   background-image: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
   background-blend-mode: overlay;
   cursor: pointer;
-  transition: 0.3s ease-in-out;
+  transition: .3s ease-in-out;
 }
 
 .selectize-input .item:hover {
@@ -328,7 +337,7 @@ textarea,
   text-decoration: none;
   text-align: center;
   border-radius: 0 2px 2px 0;
-  font-size: 0.1rem;
+  font-size: .1rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   color: #888;
@@ -336,7 +345,7 @@ textarea,
   background: #2e2e2e;
   line-height: 22px; // hack
   background-image: linear-gradient(rgba(255, 255, 255, 0.05), transparent);
-  transition: 0.3s ease-in-out;
+  transition: .3s ease-in-out;
 }
 
 .selectize-input .item a:hover {
@@ -366,12 +375,13 @@ textarea,
   border: none;
   background: transparent;
   margin-bottom: 0;
-  font-size: 0.75rem;
+  font-size: .75rem;
   padding: 0;
-  font-size: 0.75rem;
+  font-size: .75rem;
   color: #eee;
-  text-shadow: 0px 0px 0px #eee;
+  text-shadow: 0 0 0 #eee;
   -webkit-text-fill-color: transparent;
+
   &:focus {
     outline: none;
   }
@@ -388,7 +398,7 @@ textarea:focus {
 }
 
 .selectize-dropdown {
-  font-size: 0.75rem;
+  font-size: .75rem;
   color: #fff;
   background: #333;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
@@ -397,9 +407,9 @@ textarea:focus {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
-.selectize-dropdown .option,
-.selectize-dropdown .create {
-  padding: 0.5rem;
+.selectize-dropdown .create,
+.selectize-dropdown .option {
+  padding: .5rem;
 }
 
 .selectize-dropdown .active {
@@ -418,35 +428,36 @@ textarea:focus {
 
 #app p.element-on-focus {
   background: rgba(236, 133, 168, 0.15);
-  transition: 0.3s ease-in-out;
+  transition: .3s ease-in-out;
 }
-
 @media screen and (min-width: 100em) {
   #app {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
+
   .typography {
     margin: 1%;
     width: 48%;
-    max-width: 100%;
+    max-width: 40mrem;
   }
 }
-
 @media screen and (max-width: 45em) {
-  html,
-  body {
+  body,
+  html {
     width: auto;
     height: auto;
   }
+
   h1 {
     font-size: 2rem;
   }
-  #header,
-  #input-container,
+
   #app,
   #credits,
+  #header,
+  #input-container,
   .active-combination {
     position: relative;
     display: block;
@@ -454,6 +465,7 @@ textarea:focus {
     height: auto;
     margin: 0;
   }
+
   #app {
     padding: 2rem;
     margin-top: 4rem;
@@ -461,34 +473,52 @@ textarea:focus {
     min-width: auto;
     transition: none;
   }
+
   #input-container {
     padding-top: 0;
   }
+
   #credits {
     background: none;
     border: none;
     padding: 1rem 2rem;
   }
-  #inputs,
-  #empty-state {
+
+  #empty-state,
+  #inputs {
     position: relative;
   }
+
   ,
   #header {
     padding: 2rem;
   }
+
   .typography-identifier {
     padding: 0 1rem;
   }
+
   .typography-item {
     padding: 2rem;
   }
+
   .typography-identifier__text {
     text-align: left;
     float: none;
   }
+
   .typography-identifier__select {
     text-align: left;
     float: none;
   }
 }
+
+// .wrapper > * {
+//   opacity: 0.1 !important;
+// }
+// .wrapper .shepherd-target {
+//   opacity: 1 !important;
+// }
+// .shepherd-element.shepherd-theme-arrows {
+//   max-width: 450px;
+// }
